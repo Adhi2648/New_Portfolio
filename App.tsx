@@ -423,7 +423,7 @@ const App: React.FC = () => {
             </a>
           </div>
           <p className="text-slate-600 text-xs font-bold uppercase tracking-[0.3em]">
-            &copy; 2024 Adhi Narayanan Ramesh • Engineered for Performance
+            &copy; 2025 Adhi Narayanan Ramesh • Engineered for Performance
           </p>
         </div>
       </footer>
