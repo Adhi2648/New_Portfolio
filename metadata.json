@@ -1,0 +1,8 @@
+{
+  "name": "Adhi Narayanan Ramesh Portfolio",
+  "description": "A high-end AI Engineering and SDE portfolio featuring interactive skill visualizations and an integrated AI recruitment assistant powered by Gemini.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
