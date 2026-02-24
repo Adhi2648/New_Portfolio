@@ -95,7 +95,7 @@ export const EXPERIENCES: Experience[] = [
     ],
   },
   {
-    role: "Software Development Engineer",
+    role: "Software engineer",
     company: "Ernst & Young",
     location: "Full time (Bangalore, India)",
     period: "Aug 2023 – Aug 2024",
@@ -133,11 +133,24 @@ export const PROJECTS: Project[] = [
     ],
   },
   {
-    title: "Axon (Mobile Focus)",
-    stack: ["React Native", "Node.js", "Express", "MongoDB", "Firebase", "AWS"],
+    title: "Multimodal Graduate AI Research Platform",
+    stack: [
+      "Python",
+      "PyTorch",
+      "Hugging Face",
+      "LangChain",
+      "FAISS",
+      "PostgreSQL",
+      "Redis",
+      "FastAPI",
+      "React",
+      "Docker",
+      "Kubernetes",
+      "Ray",
+    ],
     description: [
-      "Developed comprehensive healthcare platform for dementia patient care, improving accessibility by 30%.",
-      "Implemented cognitive engagement algorithms that improved memory recall metrics by 25%.",
+      "Designed and implemented a scalable multimodal RAG system combining text and image embeddings to answer domain-specific queries with high relevance.",
+      "Built distributed training and inference pipelines using Ray and Hugging Face transformers, deployed via Docker/Kubernetes and monitored with Prometheus and Grafana.",
     ],
   },
 ];
