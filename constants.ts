@@ -1,4 +1,4 @@
-import { Education, Experience, Project, SkillGroup } from "./types";
+import { Education, Experience, Leadership, Project, SkillGroup } from "./types";
 
 export const PERSONAL_INFO = {
   name: "Adhi Narayanan Ramesh",
@@ -151,6 +151,23 @@ export const PROJECTS: Project[] = [
     description: [
       "Designed and implemented a scalable multimodal RAG system combining text and image embeddings to answer domain-specific queries with high relevance.",
       "Built distributed training and inference pipelines using Ray and Hugging Face transformers, deployed via Docker/Kubernetes and monitored with Prometheus and Grafana.",
+    ],
+  },
+];
+
+export const LEADERSHIP: Leadership[] = [
+  {
+    role: "Team Lead (Winning Team)",
+    organization: "Alteryx & CSUF Datathon",
+    bullets: [
+      "Analyzed transportation data using Alteryx and Tableau to identify optimization opportunities for Orange County Transportation Authority, developing recommendations for improved resource allocation and operational efficiency.",
+    ],
+  },
+  {
+    role: "Founder",
+    organization: "The Odin Club @ Dayananda Sagar University",
+    bullets: [
+      "Founded and led a web development-focused coding club, mentoring 20 students, 15 of whom secured internships.",
     ],
   },
 ];

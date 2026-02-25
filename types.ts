@@ -27,3 +27,9 @@ export interface SkillGroup {
   category: string;
   items: string[];
 }
+
+export interface Leadership {
+  role: string;
+  organization: string;
+  bullets: string[];
+}

@@ -1,4 +1,5 @@
 import {
+  Award,
   ChevronRight,
   Code2,
   Cpu,
@@ -19,6 +20,7 @@ import SkillRadar from "./components/SkillRadar";
 import {
   EDUCATION,
   EXPERIENCES,
+  LEADERSHIP,
   PERSONAL_INFO,
   PROJECTS,
   SKILLS,
@@ -37,6 +39,7 @@ const App: React.FC = () => {
         "skills",
         "experience",
         "projects",
+        "leadership",
         "education",
       ];
       const scrollPos = window.scrollY + 100;
@@ -91,7 +94,7 @@ const App: React.FC = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
-            {["skills", "experience", "projects", "education"].map((sec) => (
+            {["skills", "experience", "projects", "leadership", "education"].map((sec) => (
               <button
                 key={sec}
                 onClick={() => scrollToSection(sec)}
@@ -347,6 +350,53 @@ const App: React.FC = () => {
                       {s}
                     </span>
                   ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Leadership Section */}
+      <section id="leadership" className="py-32 px-6">
+        <div className="max-w-4xl mx-auto relative z-10">
+          <h2 className="text-5xl font-black tracking-tighter mb-16 text-center uppercase">
+            Leadership
+          </h2>
+          <div className="space-y-6">
+            {LEADERSHIP.map((item, i) => (
+              <div
+                key={i}
+                className="p-10 rounded-[2.5rem] glass flex flex-col justify-between gap-8 transition-all duration-500 hover:border-blue-500/30 group"
+              >
+                <div className="space-y-6">
+                  <div className="flex flex-col md:flex-row md:items-center gap-4">
+                    <div className="w-14 h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 group-hover:bg-blue-500/20 transition-all shrink-0">
+                      <Award size={28} />
+                    </div>
+                    <div>
+                      <h3 className="text-2xl font-black text-white tracking-tight">
+                        {item.role}
+                      </h3>
+                      <p className="text-blue-400 font-bold uppercase tracking-widest text-xs mt-1">
+                        {item.organization}
+                      </p>
+                    </div>
+                  </div>
+                  <ul className="space-y-3">
+                    {item.bullets.map((bullet, j) => (
+                      <li
+                        key={j}
+                        className="text-slate-400 text-sm md:text-base leading-relaxed flex items-start gap-3"
+                      >
+                        <ChevronRight
+                          size={16}
+                          className="mt-1 shrink-0 text-blue-500"
+                        />
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
               </div>
             ))}

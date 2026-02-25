@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   EDUCATION,
   EXPERIENCES,
+  LEADERSHIP,
   PERSONAL_INFO,
   PROJECTS,
   SKILLS,
@@ -65,6 +66,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
         - Experience: ${JSON.stringify(EXPERIENCES)}
         - Projects: ${JSON.stringify(PROJECTS)}
         - Skills: ${JSON.stringify(SKILLS)}
+        - Leadership: ${JSON.stringify(LEADERSHIP)}
         - Education: ${JSON.stringify(EDUCATION)}
         - Summary: ${PERSONAL_INFO.summary}
 
