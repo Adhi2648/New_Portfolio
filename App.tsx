@@ -27,6 +27,8 @@ import {
 const App: React.FC = () => {
   const [activeSection, setActiveSection] = useState("hero");
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [roleIndex, setRoleIndex] = useState(0);
+  const roles = ["Developer", "AI Engineer", "Data Analyst"];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -73,12 +75,19 @@ const App: React.FC = () => {
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
           <div
             onClick={() => scrollToSection("hero")}
-            className="flex items-center gap-2 group cursor-pointer"
+            className="flex items-center group cursor-pointer py-2"
           >
-            <div className="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center font-bold text-xl group-hover:rotate-12 transition-transform shadow-lg shadow-blue-600/20">
-              A
+            <div className="font-black text-2xl tracking-tighter flex items-center">
+              <span className="text-slate-200 group-hover:text-white transition-colors duration-300">
+                Adhi
+              </span>
+              <span
+                className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 ml-[2px]"
+                style={{ textShadow: '0 0 15px rgba(56, 189, 248, 0.5)' }}
+              >
+                .Dev
+              </span>
             </div>
-            <span className="font-bold text-lg hidden sm:block tracking-tight"></span>
           </div>
 
           <div className="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
@@ -125,66 +134,64 @@ const App: React.FC = () => {
       {/* Hero Section */}
       <section
         id="hero"
-        className="min-h-screen flex items-center relative pt-24 px-6"
+        className="min-h-screen flex items-center justify-center relative pt-12 pb-12 px-6"
       >
-        <div className="max-w-7xl w-full mx-auto flex flex-col lg:flex-row items-center gap-16 relative z-10">
-          {/* Left - Photo */}
-          <div className="flex-shrink-0 flex flex-col items-center gap-6 pt-4">
-            <div className="relative group">
-              <div className="absolute -inset-1 bg-gradient-to-br from-blue-500 via-purple-500 to-cyan-400 rounded-3xl opacity-60 blur-lg group-hover:opacity-80 transition-opacity duration-500"></div>
-              <div className="relative w-72 h-72 md:w-80 md:h-80 rounded-3xl overflow-hidden border-2 border-white/10">
-                <img
-                  src="/Adhi_pic.jpg"
-                  alt="Adhi Narayanan Ramesh"
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
-            <div className="text-center">
-              <p className="text-3xl font-bold tracking-tight text-slate-200">
-                Hi, I'm <span className="gradient-text">Adhi</span> 👋
-              </p>
-              <p className="text-sm text-slate-400 mt-1 font-medium">
-                AI Engineer & Software Developer
-              </p>
-            </div>
+        <div className="max-w-5xl w-full mx-auto flex flex-col items-center gap-6 relative z-10 text-center">
+
+          {/* Status Badge */}
+          <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/50 backdrop-blur-md border border-white/5 text-slate-300 text-xs font-bold uppercase tracking-[0.2em] shadow-2xl -mb-3 hover:-translate-y-0.5 transition-transform cursor-default">
+            <span className="relative flex h-2.5 w-2.5">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+            </span>
+            MS Info Systems · Open to SDE & AI Roles
           </div>
 
-          {/* Right - Content */}
-          <div className="flex-1 space-y-10 text-center lg:text-left">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-[10px] font-bold uppercase tracking-[0.2em]">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-              </span>
-              New Grad May 2026 · Open to AI & SDE Roles
-            </div>
+          {/* Main Headline */}
+          <div className="space-y-6 flex flex-col items-center relative w-full pt-0">
+            {/* Subtle background glow */}
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-3/4 h-3/4 bg-blue-500/20 blur-[100px] rounded-full pointer-events-none -z-10"></div>
 
-            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black leading-[0.9] tracking-tighter">
-              Engineering <br />
-              <span className="gradient-text">Neural</span> Systems.
+            <h1 className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tighter text-slate-100 text-center">
+              Software Developer <br className="hidden md:block" />
+              <span className="text-slate-500 font-light mx-2 hidden md:inline"></span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400" style={{ textShadow: '0 0 40px rgba(56,189,248,0.3)' }}>
+                AI Engineer.
+              </span>
             </h1>
 
-            <p className="text-lg md:text-xl text-slate-400 max-w-2xl leading-relaxed font-medium">
-              Building the infrastructure for the next generation of{" "}
-              <span className="text-white">AI applications</span>. Specialized
-              in RAG, Distributed Systems, and Microservices.
-            </p>
+            <h2 className="text-xl md:text-3xl font-medium tracking-tight text-slate-300 max-w-3xl">
+              Specializing in <span className="text-cyan-400 font-bold">Microservices</span>, <span className="text-indigo-400 font-bold">Cloud Infra</span>, & <span className="text-purple-400 font-bold">RAG Pipelines</span>.
+            </h2>
+          </div>
 
-            <div className="flex flex-wrap justify-center lg:justify-start gap-6 pt-4">
-              <button
-                onClick={() => scrollToSection("projects")}
-                className="bg-white text-slate-950 px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-2 hover:bg-blue-50 transition-all hover:scale-105 active:scale-95"
-              >
-                Explore Projects <ChevronRight size={18} />
-              </button>
-              <button
-                onClick={() => setIsChatOpen(true)}
-                className="bg-slate-900/50 backdrop-blur-xl border border-white/10 text-white px-10 py-5 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-2 hover:bg-slate-800 transition-all hover:scale-105 active:scale-95"
-              >
-                Ask the AI <MessageSquare size={18} />
-              </button>
-            </div>
+          {/* Quick Tech Stack Row */}
+          <div className="flex flex-wrap justify-center gap-3 mt-4">
+            {['TypeScript', 'Python', 'React', 'Node.js', 'AWS', 'Docker'].map(tech => (
+              <div key={tech} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm font-semibold backdrop-blur-sm hover:bg-white/10 transition-colors shadow-lg cursor-default">
+                {tech}
+              </div>
+            ))}
+          </div>
+
+          {/* Call to Actions */}
+          <div className="flex flex-wrap justify-center gap-6 pt-6">
+            <button
+              onClick={() => scrollToSection("projects")}
+              className="group relative px-8 py-4 bg-white text-slate-950 rounded-2xl font-black text-sm uppercase tracking-widest overflow-hidden transition-all hover:scale-105 active:scale-95 shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)]"
+            >
+              <div className="absolute inset-0 w-full h-full bg-gradient-to-r from-cyan-300 to-blue-400 opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+              <span className="relative flex items-center gap-2 transition-colors duration-300">
+                Explore Work <ChevronRight size={18} />
+              </span>
+            </button>
+
+            <button
+              onClick={() => setIsChatOpen(true)}
+              className="group px-8 py-4 bg-slate-900/40 backdrop-blur-xl border border-white/10 text-white rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-2 hover:bg-slate-800 transition-all hover:scale-105 hover:border-blue-500/50 active:scale-95 shadow-lg shadow-black/50"
+            >
+              Ask My AI <Terminal size={18} className="group-hover:text-blue-400 transition-colors" />
+            </button>
           </div>
         </div>
       </section>
@@ -306,7 +313,7 @@ const App: React.FC = () => {
                 <div className="mb-10 flex justify-between items-start">
                   <div className="p-4 bg-blue-600/10 rounded-2xl text-blue-400 group-hover:scale-110 group-hover:bg-blue-600/20 transition-all duration-500">
                     {project.title.includes("AI") ||
-                    project.title.includes("RAG") ? (
+                      project.title.includes("RAG") ? (
                       <Cpu size={32} />
                     ) : (
                       <Globe size={32} />
@@ -423,7 +430,7 @@ const App: React.FC = () => {
             </a>
           </div>
           <p className="text-slate-600 text-xs font-bold uppercase tracking-[0.3em]">
-            &copy; 2025 Adhi Narayanan Ramesh • Engineered for Performance
+            &copy; 2026 Adhi Narayanan Ramesh • Engineered for Performance
           </p>
         </div>
       </footer>

@@ -133,7 +133,7 @@ export const PROJECTS: Project[] = [
     ],
   },
   {
-    title: "Multimodal Graduate AI Research Platform",
+    title: "Multimodal AI Research Platform",
     stack: [
       "Python",
       "PyTorch",

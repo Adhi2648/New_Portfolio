@@ -1,4 +1,3 @@
-
 import React, { useEffect } from 'react';
 import * as THREE from 'three';
 
@@ -7,126 +6,118 @@ const Background3D: React.FC = () => {
     const container = document.getElementById('three-canvas-container');
     if (!container) return;
 
-    // Scene
+    // Scene setup
     const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x020617, 0.05); // Match bg color #020617
+
     const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 100);
-    camera.position.z = 5;
+    camera.position.z = 8;
 
     const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
     renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     container.appendChild(renderer.domElement);
 
-    // Particles Data
-    const particlesCount = 200;
-    const positions = new Float32Array(particlesCount * 3);
-    const velocities = new Float32Array(particlesCount * 3);
-    const range = 12;
+    // Group for all elements
+    const group = new THREE.Group();
+    scene.add(group);
 
-    for (let i = 0; i < particlesCount; i++) {
-      positions[i * 3] = (Math.random() - 0.5) * range;
-      positions[i * 3 + 1] = (Math.random() - 0.5) * range;
-      positions[i * 3 + 2] = (Math.random() - 0.5) * range;
+    // Create rings
+    const activeRings: THREE.Line[] = [];
+    const colors = [0x38bdf8, 0x818cf8, 0xc084fc];
 
-      velocities[i * 3] = (Math.random() - 0.5) * 0.008;
-      velocities[i * 3 + 1] = (Math.random() - 0.5) * 0.008;
-      velocities[i * 3 + 2] = (Math.random() - 0.5) * 0.008;
+    // Use LineLoop for a thinner, cleaner wireframe ring
+    for (let i = 0; i < 4; i++) {
+      // Create a circle geometry
+      const geometry = new THREE.BufferGeometry();
+      const points = [];
+      const segments = 64;
+      const radius = 2.5 + i * 1.5;
+
+      for (let j = 0; j <= segments; j++) {
+        const theta = (j / segments) * Math.PI * 2;
+        points.push(
+          new THREE.Vector3(Math.cos(theta) * radius, Math.sin(theta) * radius, 0)
+        );
+      }
+      geometry.setFromPoints(points);
+
+      const material = new THREE.LineBasicMaterial({
+        color: colors[i % colors.length],
+        transparent: true,
+        opacity: 0.6 - i * 0.1,
+        blending: THREE.AdditiveBlending,
+      });
+
+      const ring = new THREE.Line(geometry, material);
+
+      // Random initial rotation
+      ring.rotation.x = Math.random() * Math.PI;
+      ring.rotation.y = Math.random() * Math.PI;
+
+      // Give each ring unique rotation speeds
+      ring.userData = {
+        rx: (Math.random() - 0.5) * 0.003,
+        ry: (Math.random() - 0.5) * 0.003,
+        rz: (Math.random() - 0.5) * 0.003
+      };
+
+      group.add(ring);
+      activeRings.push(ring);
     }
 
-    // Points Object
-    const pointGeometry = new THREE.BufferGeometry();
-    pointGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
-    
-    const pointMaterial = new THREE.PointsMaterial({
-      color: 0x38bdf8,
-      size: 0.12, // Increased size
-      transparent: true,
-      opacity: 0.9, // Increased opacity
-      blending: THREE.AdditiveBlending
-    });
-
-    const points = new THREE.Points(pointGeometry, pointMaterial);
-    scene.add(points);
-
-    // Lines (Constellation)
-    const lineMaterial = new THREE.LineBasicMaterial({
+    // Add some ambient drifting particles
+    const particleGeo = new THREE.BufferGeometry();
+    const particleCount = 40;
+    const pos = new Float32Array(particleCount * 3);
+    for (let i = 0; i < particleCount * 3; i++) {
+      pos[i] = (Math.random() - 0.5) * 15;
+    }
+    particleGeo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    const particleMat = new THREE.PointsMaterial({
       color: 0x818cf8,
+      size: 0.05,
       transparent: true,
-      opacity: 0.35, // Increased opacity for higher visibility
+      opacity: 0.4,
       blending: THREE.AdditiveBlending
     });
+    const particles = new THREE.Points(particleGeo, particleMat);
+    group.add(particles);
 
     // Mouse Interaction
-    const mouse = new THREE.Vector2(-100, -100);
-    const targetMouse = new THREE.Vector2(-100, -100);
+    const mouse = new THREE.Vector2(0, 0);
+    const targetMouse = new THREE.Vector2(0, 0);
 
     const onMouseMove = (event: MouseEvent) => {
       targetMouse.x = (event.clientX / window.innerWidth) * 2 - 1;
       targetMouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
     };
+
     window.addEventListener('mousemove', onMouseMove);
 
     // Animation loop
-    let lineMesh: THREE.LineSegments | null = null;
+    let animationFrameId: number;
 
     const animate = () => {
-      requestAnimationFrame(animate);
+      animationFrameId = requestAnimationFrame(animate);
 
-      // Smooth mouse movement
-      mouse.x += (targetMouse.x - mouse.x) * 0.08;
-      mouse.y += (targetMouse.y - mouse.y) * 0.08;
+      // Smooth mouse movement for parallax
+      mouse.x += (targetMouse.x - mouse.x) * 0.05;
+      mouse.y += (targetMouse.y - mouse.y) * 0.05;
 
-      const posArr = pointGeometry.attributes.position.array as Float32Array;
-      const linePositions = [];
+      // Parallax effect on the whole group
+      group.rotation.x = mouse.y * 0.3;
+      group.rotation.y = mouse.x * 0.3;
 
-      for (let i = 0; i < particlesCount; i++) {
-        const i3 = i * 3;
+      // Rotate individual rings
+      activeRings.forEach(ring => {
+        ring.rotation.x += ring.userData.rx;
+        ring.rotation.y += ring.userData.ry;
+        ring.rotation.z += ring.userData.rz;
+      });
 
-        // Move particles
-        posArr[i3] += velocities[i3];
-        posArr[i3 + 1] += velocities[i3 + 1];
-        posArr[i3 + 2] += velocities[i3 + 2];
-
-        // Bounds check
-        if (Math.abs(posArr[i3]) > range / 2) velocities[i3] *= -1;
-        if (Math.abs(posArr[i3 + 1]) > range / 2) velocities[i3 + 1] *= -1;
-        if (Math.abs(posArr[i3 + 2]) > range / 2) velocities[i3 + 2] *= -1;
-
-        // Mouse interaction (gravity effect)
-        const mousePoint = new THREE.Vector3(mouse.x * 6, mouse.y * 6, 0);
-        const p = new THREE.Vector3(posArr[i3], posArr[i3 + 1], posArr[i3 + 2]);
-        const distToMouse = p.distanceTo(mousePoint);
-
-        if (distToMouse < 2.5) {
-          const dir = p.clone().sub(mousePoint).normalize();
-          const force = (2.5 - distToMouse) * 0.015;
-          posArr[i3] += dir.x * force;
-          posArr[i3 + 1] += dir.y * force;
-        }
-
-        // Connect lines
-        for (let j = i + 1; j < particlesCount; j++) {
-          const j3 = j * 3;
-          const distSq = 
-            Math.pow(posArr[i3] - posArr[j3], 2) +
-            Math.pow(posArr[i3 + 1] - posArr[j3 + 1], 2) +
-            Math.pow(posArr[i3 + 2] - posArr[j3 + 2], 2);
-
-          if (distSq < 6.25) { // 2.5^2
-            linePositions.push(posArr[i3], posArr[i3 + 1], posArr[i3 + 2]);
-            linePositions.push(posArr[j3], posArr[j3 + 1], posArr[j3 + 2]);
-          }
-        }
-      }
-
-      pointGeometry.attributes.position.needsUpdate = true;
-
-      // Update lines
-      if (lineMesh) scene.remove(lineMesh);
-      const lineGeometry = new THREE.BufferGeometry();
-      lineGeometry.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
-      lineMesh = new THREE.LineSegments(lineGeometry, lineMaterial);
-      scene.add(lineMesh);
+      // Slowly rotate particles
+      particles.rotation.y += 0.001;
 
       renderer.render(scene, camera);
     };
@@ -143,12 +134,15 @@ const Background3D: React.FC = () => {
     return () => {
       window.removeEventListener('mousemove', onMouseMove);
       window.removeEventListener('resize', handleResize);
+      cancelAnimationFrame(animationFrameId);
       if (container.contains(renderer.domElement)) {
         container.removeChild(renderer.domElement);
       }
-      pointGeometry.dispose();
-      pointMaterial.dispose();
-      lineMaterial.dispose();
+      // cleanup
+      activeRings.forEach(r => { r.geometry.dispose(); (r.material as THREE.Material).dispose(); });
+      particleGeo.dispose();
+      particleMat.dispose();
+      renderer.dispose();
     };
   }, []);
 
