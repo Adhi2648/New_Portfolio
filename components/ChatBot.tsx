@@ -1,14 +1,5 @@
-import { GoogleGenAI } from "@google/genai";
 import { Bot, Loader2, Send, Sparkles, User, X } from "lucide-react";
 import React, { useEffect, useRef, useState } from "react";
-import {
-  EDUCATION,
-  EXPERIENCES,
-  LEADERSHIP,
-  PERSONAL_INFO,
-  PROJECTS,
-  SKILLS,
-} from "../constants";
 
 interface Message {
   role: "user" | "assistant";
@@ -52,51 +43,25 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
   const generateResponse = async (userMsg: string) => {
     try {
       setLoading(true);
-      const ai = new GoogleGenAI({
-        apiKey: import.meta.env.VITE_GEMINI_API_KEY,
+      
+      const response = await fetch('/.netlify/functions/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages, userMsg }),
       });
 
-      const systemInstruction = `
-        You are an AI recruiter assistant for Adhi Narayanan Ramesh. 
-        Your goal is to answer questions about Adhi's professional background, technical skills, and projects based on the provided resume data.
-        
-        DATA ABOUT ADHI:
-        - Name: ${PERSONAL_INFO.name}
-        - Role: ${PERSONAL_INFO.title}
-        - Experience: ${JSON.stringify(EXPERIENCES)}
-        - Projects: ${JSON.stringify(PROJECTS)}
-        - Skills: ${JSON.stringify(SKILLS)}
-        - Leadership: ${JSON.stringify(LEADERSHIP)}
-        - Education: ${JSON.stringify(EDUCATION)}
-        - Summary: ${PERSONAL_INFO.summary}
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
 
-        RULES:
-        - Be professional, helpful, and enthusiastic about Adhi's skills.
-        - If a question is not about Adhi, politely redirect back to his portfolio.
-        - Keep answers concise but informative.
-        - Use Markdown for bullet points or emphasis.
-      `;
-
-      const response = await ai.models.generateContent({
-        model: "gemini-3-flash-preview",
-        contents: [...messages, { role: "user", content: userMsg }].map(
-          (m) => ({
-            role: m.role === "assistant" ? "model" : "user",
-            parts: [{ text: m.content }],
-          }),
-        ),
-        config: {
-          systemInstruction,
-          temperature: 0.7,
-        },
-      });
-
+      const data = await response.json();
+      
       const aiText =
-        response.text ||
+        data.text ||
         "I'm sorry, I couldn't process that. Try asking about Adhi's RAG system!";
       setMessages((prev) => [...prev, { role: "assistant", content: aiText }]);
     } catch (err) {
-      console.error(err);
+      console.error("Chat API Error:", err);
       setMessages((prev) => [
         ...prev,
         {
