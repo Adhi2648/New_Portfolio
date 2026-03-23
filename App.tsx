@@ -86,7 +86,7 @@ const App: React.FC = () => {
               </span>
               <span
                 className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-300 ml-[2px]"
-                style={{ textShadow: '0 0 15px rgba(56, 189, 248, 0.5)' }}
+                style={{ textShadow: "0 0 15px rgba(56, 189, 248, 0.5)" }}
               >
                 .Dev
               </span>
@@ -94,7 +94,13 @@ const App: React.FC = () => {
           </div>
 
           <div className="hidden md:flex items-center gap-8 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-400">
-            {["skills", "experience", "projects", "leadership", "education"].map((sec) => (
+            {[
+              "skills",
+              "experience",
+              "projects",
+              "leadership",
+              "education",
+            ].map((sec) => (
               <button
                 key={sec}
                 onClick={() => scrollToSection(sec)}
@@ -137,17 +143,16 @@ const App: React.FC = () => {
       {/* Hero Section */}
       <section
         id="hero"
-        className="min-h-screen flex items-center justify-center relative pt-12 pb-12 px-6"
+        className="min-h-screen flex items-center relative pt-32 pb-12 px-6"
       >
-        <div className="max-w-5xl w-full mx-auto flex flex-col items-center gap-6 relative z-10 text-center">
-
+        <div className="max-w-5xl w-full mx-auto my-auto flex flex-col items-center gap-6 relative z-10 text-center">
           {/* Status Badge */}
           <div className="inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-slate-900/50 backdrop-blur-md border border-white/5 text-slate-300 text-xs font-bold uppercase tracking-[0.2em] shadow-2xl -mb-3 hover:-translate-y-0.5 transition-transform cursor-default">
             <span className="relative flex h-2.5 w-2.5">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
             </span>
-            MS Info Systems · Open to SDE & AI Roles
+            MS Information Systems · Open to SDE & AI Roles
           </div>
 
           {/* Main Headline */}
@@ -158,23 +163,34 @@ const App: React.FC = () => {
             <h1 className="text-5xl md:text-7xl lg:text-8xl font-black leading-[1.05] tracking-tighter text-slate-100 text-center">
               Software Developer <br className="hidden md:block" />
               <span className="text-slate-500 font-light mx-2 hidden md:inline"></span>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400" style={{ textShadow: '0 0 40px rgba(56,189,248,0.3)' }}>
+              <span
+                className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-cyan-300 to-purple-400"
+                style={{ textShadow: "0 0 40px rgba(56,189,248,0.3)" }}
+              >
                 AI Engineer.
               </span>
             </h1>
 
             <h2 className="text-xl md:text-3xl font-medium tracking-tight text-slate-300 max-w-3xl">
-              Specializing in <span className="text-cyan-400 font-bold">Microservices</span>, <span className="text-indigo-400 font-bold">Cloud Infra</span>, & <span className="text-purple-400 font-bold">RAG Pipelines</span>.
+              Specializing in{" "}
+              <span className="text-cyan-400 font-bold">Microservices</span>,{" "}
+              <span className="text-indigo-400 font-bold">Cloud Infra</span>, &{" "}
+              <span className="text-purple-400 font-bold">RAG Pipelines</span>.
             </h2>
           </div>
 
           {/* Quick Tech Stack Row */}
           <div className="flex flex-wrap justify-center gap-3 mt-4">
-            {['TypeScript', 'Python', 'React', 'Node.js', 'AWS', 'Docker'].map(tech => (
-              <div key={tech} className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm font-semibold backdrop-blur-sm hover:bg-white/10 transition-colors shadow-lg cursor-default">
-                {tech}
-              </div>
-            ))}
+            {["TypeScript", "Python", "React", "Node.js", "AWS", "Docker"].map(
+              (tech) => (
+                <div
+                  key={tech}
+                  className="px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-slate-300 text-sm font-semibold backdrop-blur-sm hover:bg-white/10 transition-colors shadow-lg cursor-default"
+                >
+                  {tech}
+                </div>
+              ),
+            )}
           </div>
 
           {/* Call to Actions */}
@@ -193,7 +209,11 @@ const App: React.FC = () => {
               onClick={() => setIsChatOpen(true)}
               className="group px-8 py-4 bg-slate-900/40 backdrop-blur-xl border border-white/10 text-white rounded-2xl font-black text-sm uppercase tracking-widest flex items-center gap-2 hover:bg-slate-800 transition-all hover:scale-105 hover:border-blue-500/50 active:scale-95 shadow-lg shadow-black/50"
             >
-              Ask My AI <Terminal size={18} className="group-hover:text-blue-400 transition-colors" />
+              Ask My AI{" "}
+              <Terminal
+                size={18}
+                className="group-hover:text-blue-400 transition-colors"
+              />
             </button>
           </div>
         </div>
@@ -316,7 +336,7 @@ const App: React.FC = () => {
                 <div className="mb-10 flex justify-between items-start">
                   <div className="p-4 bg-blue-600/10 rounded-2xl text-blue-400 group-hover:scale-110 group-hover:bg-blue-600/20 transition-all duration-500">
                     {project.title.includes("AI") ||
-                      project.title.includes("RAG") ? (
+                    project.title.includes("RAG") ? (
                       <Cpu size={32} />
                     ) : (
                       <Globe size={32} />
