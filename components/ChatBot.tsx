@@ -88,23 +88,23 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-8 right-8 w-[90vw] md:w-[400px] h-[600px] max-h-[80vh] bg-slate-900 border border-slate-800 rounded-3xl shadow-2xl flex flex-col overflow-hidden z-[100]">
+    <div className="fixed bottom-8 right-8 w-[90vw] md:w-[400px] h-[600px] max-h-[80vh] bg-brand-900 border border-brand-800 rounded-2xl shadow-2xl flex flex-col overflow-hidden z-[100] font-sans">
       {/* Header */}
-      <div className="p-4 bg-blue-600 flex items-center justify-between text-white">
+      <div className="p-4 bg-brand-800 flex items-center justify-between text-brand-50 border-b border-brand-700">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 bg-white/20 rounded-lg flex items-center justify-center">
-            <Sparkles size={16} />
+          <div className="w-8 h-8 bg-brand-700 rounded-lg flex items-center justify-center">
+            <Sparkles size={16} className="text-accent" />
           </div>
           <div>
             <h3 className="font-bold text-sm leading-none">
-              Adhi's Digital Twin
+              Adhi's AI
             </h3>
-            <span className="text-[10px] opacity-75">AI Assistant</span>
+            <span className="text-[10px] text-brand-400">Assistant</span>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="hover:bg-white/20 p-1 rounded-md transition-colors"
+          className="hover:bg-brand-700 p-1 rounded-md transition-colors text-brand-400 hover:text-brand-50"
         >
           <X size={20} />
         </button>
@@ -113,7 +113,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
       {/* Messages */}
       <div
         ref={scrollRef}
-        className="flex-grow p-4 space-y-4 overflow-y-auto bg-slate-950/50"
+        className="flex-grow p-4 space-y-4 overflow-y-auto bg-brand-900"
       >
         {messages.map((m, i) => (
           <div
@@ -121,24 +121,24 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
             className={`flex gap-3 ${m.role === "user" ? "flex-row-reverse" : ""}`}
           >
             <div
-              className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${m.role === "user" ? "bg-blue-600" : "bg-slate-800 border border-slate-700"}`}
+              className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${m.role === "user" ? "bg-brand-100 text-brand-900" : "bg-brand-800 border border-brand-700 text-brand-300"}`}
             >
               {m.role === "user" ? <User size={14} /> : <Bot size={14} />}
             </div>
             <div
-              className={`max-w-[80%] p-3 rounded-2xl text-sm ${m.role === "user" ? "bg-blue-600 text-white rounded-tr-none" : "bg-slate-800 text-slate-200 border border-slate-700 rounded-tl-none"}`}
+              className={`max-w-[80%] p-3 rounded-2xl text-sm ${m.role === "user" ? "bg-brand-100 text-brand-900 rounded-tr-none" : "bg-brand-800 text-brand-200 border border-brand-700 rounded-tl-none"}`}
               dangerouslySetInnerHTML={{ __html: renderMarkdown(m.content) }}
             />
           </div>
         ))}
         {loading && (
           <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center shrink-0">
+            <div className="w-8 h-8 rounded-full bg-brand-800 border border-brand-700 flex items-center justify-center shrink-0 text-brand-300">
               <Bot size={14} />
             </div>
-            <div className="bg-slate-800 border border-slate-700 p-3 rounded-2xl flex items-center gap-2">
-              <Loader2 className="animate-spin text-blue-500" size={16} />
-              <span className="text-sm text-slate-400">Thinking...</span>
+            <div className="bg-brand-800 border border-brand-700 p-3 rounded-2xl flex items-center gap-2">
+              <Loader2 className="animate-spin text-accent" size={16} />
+              <span className="text-sm text-brand-400">Thinking...</span>
             </div>
           </div>
         )}
@@ -147,7 +147,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
       {/* Input */}
       <form
         onSubmit={handleSubmit}
-        className="p-4 bg-slate-900 border-t border-slate-800"
+        className="p-4 bg-brand-900 border-t border-brand-800"
       >
         <div className="relative">
           <input
@@ -155,14 +155,14 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about my projects..."
-            className="w-full bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all pr-12"
+            className="w-full bg-brand-800 border border-brand-700 rounded-xl px-4 py-3 text-sm text-brand-50 focus:outline-none focus:border-accent transition-all pr-12 placeholder:text-brand-500"
           />
           <button
             type="submit"
             disabled={!input.trim() || loading}
-            className="absolute right-2 top-2 p-1.5 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 disabled:bg-slate-800 rounded-lg transition-colors"
+            className="absolute right-2 top-2 p-1.5 bg-brand-100 hover:bg-white disabled:opacity-50 disabled:bg-brand-800 rounded-lg transition-colors"
           >
-            <Send size={18} className="text-white" />
+            <Send size={18} className="text-brand-900" />
           </button>
         </div>
       </form>
