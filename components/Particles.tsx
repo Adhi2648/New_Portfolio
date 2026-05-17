@@ -249,9 +249,8 @@ export const Particles: React.FC<ParticlesProps> = ({
     // Replace out-of-bounds particles without mutating the array during iteration
     for (let j = 0; j < toReplace.length; j++) {
       const newCircle = circleParams();
-      drawCircle(newCircle, false);
-      arr[toReplace[j]] = arr[arr.length - 1]; // swap with last
-      arr[arr.length - 1] = newCircle; // new circle is already pushed by drawCircle
+      drawCircle(newCircle, true); // update=true avoids pushing to array
+      arr[toReplace[j]] = newCircle;
     }
 
     rafId.current = window.requestAnimationFrame(animate);

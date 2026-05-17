@@ -34,33 +34,52 @@ export const CustomCursor = () => {
       cursor.style.opacity = "1";
     };
 
-    const onMouseEnter = () => {
-      gsap.to(cursor, { scale: 2.5, opacity: 0.5, backgroundColor: "#10b981", duration: 0.3 });
+    let isHovering = false;
+
+    const checkHover = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (target?.closest("a, button, input, textarea, [role='button']")) {
+        if (!isHovering) {
+          isHovering = true;
+          gsap.to(cursor, { scale: 2.5, opacity: 0.5, backgroundColor: "#10b981", duration: 0.3 });
+        }
+      } else {
+        if (isHovering) {
+          isHovering = false;
+          gsap.to(cursor, { scale: 1, opacity: 1, backgroundColor: "#10b981", duration: 0.3 });
+        }
+      }
     };
 
-    const onMouseLeave = () => {
-      gsap.to(cursor, { scale: 1, opacity: 1, backgroundColor: "#10b981", duration: 0.3 });
+    const onClick = (e: MouseEvent) => {
+      // Small bounce effect on click
+      gsap.fromTo(cursor, 
+        { scale: isHovering ? 2 : 0.8 }, 
+        { scale: isHovering ? 2.5 : 1, duration: 0.3 }
+      );
+      
+      // Re-evaluate after a short delay in case the clicked element unmounts
+      setTimeout(() => {
+        const el = document.elementFromPoint(e.clientX, e.clientY) as HTMLElement;
+        if (el && !el.closest("a, button, input, textarea, [role='button']")) {
+          isHovering = false;
+          gsap.to(cursor, { scale: 1, opacity: 1, backgroundColor: "#10b981", duration: 0.3 });
+        }
+      }, 50);
     };
 
     window.addEventListener("mousemove", onMouseMove, { passive: true });
+    window.addEventListener("mouseover", checkHover, { passive: true });
+    window.addEventListener("click", onClick, { passive: true });
     document.documentElement.addEventListener("mouseleave", onMouseLeaveDocument);
     document.documentElement.addEventListener("mouseenter", onMouseEnterDocument);
 
-    // Add hover effect to interactive elements
-    const iteractives = document.querySelectorAll("a, button, input, textarea, [role='button']");
-    iteractives.forEach((el) => {
-      el.addEventListener("mouseenter", onMouseEnter);
-      el.addEventListener("mouseleave", onMouseLeave);
-    });
-
     return () => {
       window.removeEventListener("mousemove", onMouseMove);
+      window.removeEventListener("mouseover", checkHover);
+      window.removeEventListener("click", onClick);
       document.documentElement.removeEventListener("mouseleave", onMouseLeaveDocument);
       document.documentElement.removeEventListener("mouseenter", onMouseEnterDocument);
-      iteractives.forEach((el) => {
-        el.removeEventListener("mouseenter", onMouseEnter);
-        el.removeEventListener("mouseleave", onMouseLeave);
-      });
     };
   }, []);
 

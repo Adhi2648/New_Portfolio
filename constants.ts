@@ -88,7 +88,7 @@ export const SKILLS: SkillGroup[] = [
 
 export const EXPERIENCES: Experience[] = [
   {
-    role: "AI Engineer Intern",
+    role: "AI Engineer",
     company: "Helton Law",
     location: "Costa Mesa, CA",
     period: "May 2025 – Present",
