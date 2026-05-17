@@ -68,15 +68,21 @@ const App: React.FC = () => {
     <div className="min-h-screen text-brand-50 bg-brand-900 overflow-hidden font-sans">
       <CustomCursor />
       
-      {/* Minimal Navbar */}
-      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-6 transition-transform duration-300">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      {/* Blended Logo Overlay */}
+      <div className="fixed top-0 left-0 w-full z-[60] px-6 py-6 pointer-events-none mix-blend-difference">
+        <div className="max-w-7xl mx-auto flex items-center">
           <button
             onClick={() => scrollToSection("hero")}
-            className="font-bold text-xl tracking-tighter"
+            className="font-bold text-xl tracking-tighter pointer-events-auto text-white"
           >
             Adhi.dev
           </button>
+        </div>
+      </div>
+      
+      {/* Minimal Navbar (Links & Resume) */}
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-6 transition-transform duration-300 pointer-events-none">
+        <div className="max-w-7xl mx-auto flex items-center justify-end pointer-events-auto">
           
           <div className="flex items-center gap-6">
             <div className="hidden md:flex items-center gap-6 text-sm font-medium text-brand-300">
@@ -107,7 +113,7 @@ const App: React.FC = () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <Particles
             className="absolute inset-0"
-            quantity={50}
+            quantity={70}
             ease={80}
             color="#10b981"
             staticity={50}
