@@ -130,7 +130,11 @@ const App: React.FC = () => {
             <h1 className="text-6xl md:text-7xl lg:text-[6.5rem] xl:text-[7.5rem] font-bold leading-[1.1] tracking-tighter max-w-5xl">
               <AnimatedText text="Hi," /> <br />
               <AnimatedText text="I'm" delay={0.2} />{" "}
-              <AnimatedText text="Adhi" delay={0.3} className="text-brand-400" />
+              <AnimatedText 
+                text="Adhi" 
+                delay={0.3} 
+                className="text-hollow" 
+              />
             </h1>
             <div className="mt-4 max-w-2xl">
               <ScrollReveal delay={0.6} direction="up" distance={20}>
