@@ -42,6 +42,12 @@ html.lenis, html.lenis body {
   will-change: transform;
 }
 
+/* GPU-promote the scroll container during smooth scrolling.
+   contain: layout paint limits the browser's layout/paint scope for each section. */
+section {
+  contain: layout paint;
+}
+
 .lenis.lenis-stopped {
   overflow: hidden;
 }
@@ -83,6 +89,7 @@ html.lenis, html.lenis body {
   100% { transform: translateY(0px); }
 }
 
+
 @media (min-width: 1024px) {
   * {
     cursor: none !important;
@@ -120,4 +127,19 @@ html.lenis, html.lenis body {
 }
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: #374151; /* brand-700 */
+}
+
+/* Accessibility: disable all animations for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Isolate the hero section to limit compositing scope for blend modes / filters */
+#hero {
+  isolation: isolate;
 }

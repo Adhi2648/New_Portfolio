@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef } from "react";
 import { cn } from "../lib/utils";
 
 interface ParticlesProps {
@@ -25,18 +25,48 @@ export const Particles: React.FC<ParticlesProps> = ({
   const mousePosition = useRef({ x: 0, y: 0 });
   const mouse = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const canvasSize = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
-  const dpr = typeof window !== "undefined" ? window.devicePixelRatio : 1;
+  const canvasRect = useRef<DOMRect | null>(null);
+  const rafId = useRef<number>(0);
+  // Cap DPR at 1.5 for particles — tiny dots don't need retina rendering
+  // and this saves 1.8x–4x GPU fill-rate vs DPR 2–3
+  const dpr = typeof window !== "undefined" ? Math.min(window.devicePixelRatio, 1.5) : 1;
 
   useEffect(() => {
+    // Respect user's reduced-motion preference
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) return;
+
     if (canvasRef.current) {
-      context.current = canvasRef.current.getContext("2d");
+      context.current = canvasRef.current.getContext("2d", { alpha: true });
     }
-    initCanvas();
-    animate();
+
+    // Defer particle animation start until the browser is idle
+    // This prevents competing with initial page render/paint for GPU time
+    const startAnimation = () => {
+      initCanvas();
+      rafId.current = window.requestAnimationFrame(animate);
+    };
+
+    let idleHandle: number | undefined;
+    let timeoutHandle: ReturnType<typeof setTimeout> | undefined;
+    if ("requestIdleCallback" in window) {
+      idleHandle = (window as any).requestIdleCallback(startAnimation, { timeout: 1500 });
+    } else {
+      // Fallback: defer by 500ms to let initial paint settle
+      timeoutHandle = setTimeout(startAnimation, 500);
+    }
+
     window.addEventListener("resize", initCanvas);
 
     return () => {
       window.removeEventListener("resize", initCanvas);
+      window.cancelAnimationFrame(rafId.current);
+      if (idleHandle !== undefined) {
+        (window as any).cancelIdleCallback(idleHandle);
+      }
+      if (timeoutHandle !== undefined) {
+        clearTimeout(timeoutHandle);
+      }
     };
   }, []);
 
@@ -46,8 +76,9 @@ export const Particles: React.FC<ParticlesProps> = ({
   };
 
   const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (canvasRef.current) {
-      const rect = canvasRef.current.getBoundingClientRect();
+    // Use cached rect instead of calling getBoundingClientRect every move
+    const rect = canvasRect.current;
+    if (rect) {
       const { w, h } = canvasSize.current;
       const x = e.clientX - rect.left - w / 2;
       const y = e.clientY - rect.top - h / 2;
@@ -69,6 +100,8 @@ export const Particles: React.FC<ParticlesProps> = ({
       canvasRef.current.style.width = `${canvasSize.current.w}px`;
       canvasRef.current.style.height = `${canvasSize.current.h}px`;
       context.current.scale(dpr, dpr);
+      // Cache the bounding rect — only update on resize
+      canvasRect.current = canvasRef.current.getBoundingClientRect();
     }
   };
 
@@ -79,7 +112,7 @@ export const Particles: React.FC<ParticlesProps> = ({
     const translateY = 0;
     const size = Math.floor(Math.random() * 2) + 0.1;
     const alpha = 0;
-    const targetAlpha = parseFloat((Math.random() * 0.8 + 0.2).toFixed(1));
+    const targetAlpha = Math.random() * 0.8 + 0.2;
     const dx = (Math.random() - 0.5) * 0.2;
     const dy = (Math.random() - 0.5) * 0.2;
     const magnetism = 0.1 + Math.random() * 4;
@@ -110,6 +143,8 @@ export const Particles: React.FC<ParticlesProps> = ({
   };
 
   const rgb = hexToRgb(color);
+  // Pre-compute the RGB string once instead of joining every draw call
+  const rgbString = rgb.join(", ");
 
   const drawCircle = (circle: any, update = false) => {
     if (context.current) {
@@ -117,7 +152,7 @@ export const Particles: React.FC<ParticlesProps> = ({
       context.current.translate(translateX, translateY);
       context.current.beginPath();
       context.current.arc(x, y, size, 0, 2 * Math.PI);
-      context.current.fillStyle = `rgba(${rgb.join(", ")}, ${alpha})`;
+      context.current.fillStyle = `rgba(${rgbString}, ${alpha})`;
       context.current.fill();
       context.current.setTransform(dpr, 0, 0, dpr, 0, 0);
 
@@ -161,18 +196,27 @@ export const Particles: React.FC<ParticlesProps> = ({
 
   const animate = () => {
     clearContext();
-    circles.current.forEach((circle: any, i: number) => {
+    const arr = circles.current;
+    const len = arr.length;
+    const w = canvasSize.current.w;
+    const h = canvasSize.current.h;
+    const mx = mouse.current.x;
+    const my = mouse.current.y;
+
+    // Collect indices of out-of-bounds particles to replace after the loop
+    const toReplace: number[] = [];
+
+    for (let i = 0; i < len; i++) {
+      const circle = arr[i];
+
       // Handle the alpha value
-      const edge = [
-        circle.x + circle.translateX - circle.size, // distance from left edge
-        canvasSize.current.w - circle.x - circle.translateX - circle.size, // distance from right edge
-        circle.y + circle.translateY - circle.size, // distance from top edge
-        canvasSize.current.h - circle.y - circle.translateY - circle.size, // distance from bottom edge
-      ];
-      const closestEdge = edge.reduce((a, b) => Math.min(a, b));
-      const remapClosestEdge = parseFloat(
-        remapValue(closestEdge, 0, 20, 0, 1).toFixed(2),
-      );
+      const edgeLeft = circle.x + circle.translateX - circle.size;
+      const edgeRight = w - circle.x - circle.translateX - circle.size;
+      const edgeTop = circle.y + circle.translateY - circle.size;
+      const edgeBottom = h - circle.y - circle.translateY - circle.size;
+      const closestEdge = Math.min(edgeLeft, edgeRight, edgeTop, edgeBottom);
+      const remapClosestEdge = remapValue(closestEdge, 0, 20, 0, 1);
+
       if (remapClosestEdge > 1) {
         circle.alpha += 0.02;
         if (circle.alpha > circle.targetAlpha) {
@@ -181,39 +225,36 @@ export const Particles: React.FC<ParticlesProps> = ({
       } else {
         circle.alpha = circle.targetAlpha * remapClosestEdge;
       }
+
+      // Update position in-place (no spread)
       circle.x += circle.dx;
       circle.y += circle.dy;
       circle.translateX +=
-        (mouse.current.x / (staticity / circle.magnetism) - circle.translateX) /
-        ease;
+        (mx / (staticity / circle.magnetism) - circle.translateX) / ease;
       circle.translateY +=
-        (mouse.current.y / (staticity / circle.magnetism) - circle.translateY) /
-        ease;
+        (my / (staticity / circle.magnetism) - circle.translateY) / ease;
 
       if (
         circle.x < -circle.size ||
-        circle.x > canvasSize.current.w + circle.size ||
+        circle.x > w + circle.size ||
         circle.y < -circle.size ||
-        circle.y > canvasSize.current.h + circle.size
+        circle.y > h + circle.size
       ) {
-        circles.current.splice(i, 1);
-        const newCircle = circleParams();
-        drawCircle(newCircle);
+        toReplace.push(i);
       } else {
-        drawCircle(
-          {
-            ...circle,
-            x: circle.x,
-            y: circle.y,
-            translateX: circle.translateX,
-            translateY: circle.translateY,
-            alpha: circle.alpha,
-          },
-          true,
-        );
+        drawCircle(circle, true);
       }
-    });
-    window.requestAnimationFrame(animate);
+    }
+
+    // Replace out-of-bounds particles without mutating the array during iteration
+    for (let j = 0; j < toReplace.length; j++) {
+      const newCircle = circleParams();
+      drawCircle(newCircle, false);
+      arr[toReplace[j]] = arr[arr.length - 1]; // swap with last
+      arr[arr.length - 1] = newCircle; // new circle is already pushed by drawCircle
+    }
+
+    rafId.current = window.requestAnimationFrame(animate);
   };
 
   return (
@@ -221,6 +262,7 @@ export const Particles: React.FC<ParticlesProps> = ({
       className={cn("pointer-events-none", className)}
       ref={canvasContainerRef}
       aria-hidden="true"
+      onMouseMove={onMouseMove}
     >
       <canvas ref={canvasRef} />
     </div>

@@ -43,15 +43,17 @@ const App: React.FC = () => {
 
     lenis.on('scroll', ScrollTrigger.update);
 
-    gsap.ticker.add((time) => {
+    // Store callback reference so we can properly remove it on cleanup
+    const tickerCallback = (time: number) => {
       lenis.raf(time * 1000);
-    });
+    };
+    gsap.ticker.add(tickerCallback);
 
     gsap.ticker.lagSmoothing(0);
 
     return () => {
       lenis.destroy();
-      gsap.ticker.remove(lenis.raf);
+      gsap.ticker.remove(tickerCallback);
     };
   }, []);
 
@@ -67,7 +69,7 @@ const App: React.FC = () => {
       <CustomCursor />
       
       {/* Minimal Navbar */}
-      <nav className="fixed top-0 left-0 w-full z-50 mix-blend-difference px-6 py-6 transition-transform duration-300">
+      <nav className="fixed top-0 left-0 w-full z-50 px-6 py-6 transition-transform duration-300">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button
             onClick={() => scrollToSection("hero")}
@@ -105,7 +107,7 @@ const App: React.FC = () => {
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <Particles
             className="absolute inset-0"
-            quantity={80}
+            quantity={50}
             ease={80}
             color="#10b981"
             staticity={50}
@@ -170,13 +172,17 @@ const App: React.FC = () => {
           <div className="flex justify-center lg:justify-end order-1 lg:order-2 z-0">
             <ScrollReveal delay={0.3} direction="right" distance={40}>
               <div className="relative mt-6 lg:mt-0 flex justify-center items-center">
-                <div className="relative animate-[float_10s_ease-in-out_infinite]">
-                  <div className="absolute inset-1/4 bg-brand-500/20 rounded-full blur-[80px]" />
+                <div className="relative animate-[float_10s_ease-in-out_infinite] will-change-transform">
+                  <div className="absolute inset-0" style={{ background: "radial-gradient(circle at center, rgba(16,185,129,0.15) 0%, transparent 60%)" }} />
                   <img 
                     ref={graphicRef}
                     src="/hero-graphic.png" 
                     alt="Abstract Space Singularity" 
-                    className="w-[360px] md:w-[500px] lg:w-[650px] object-contain opacity-80 mix-blend-screen scale-110 md:scale-125 lg:scale-150 transition-transform duration-700 hover:scale-[1.55]"
+                    decoding="async"
+                    draggable={false}
+                    onContextMenu={(e) => e.preventDefault()}
+                    onDragStart={(e) => e.preventDefault()}
+                    className="w-[360px] md:w-[500px] lg:w-[650px] object-contain opacity-[0.85] scale-110 md:scale-125 lg:scale-150 transition-transform duration-700 hover:scale-[1.55] select-none"
                     style={{
                       WebkitMaskImage: "radial-gradient(circle at center, black 30%, transparent 70%)",
                       maskImage: "radial-gradient(circle at center, black 30%, transparent 70%)"
@@ -203,7 +209,7 @@ const App: React.FC = () => {
               {SKILLS.flatMap((g) => g.items).map((skill) => (
                 <div
                   key={skill}
-                  className="flex items-center justify-center px-6 py-3 rounded-xl border border-brand-800 bg-brand-900/50 backdrop-blur-sm shadow-sm"
+                  className="flex items-center justify-center px-6 py-3 rounded-xl border border-brand-800 bg-brand-900/50 shadow-sm"
                 >
                   <span className="text-brand-100 font-medium text-lg">{skill}</span>
                 </div>
@@ -213,7 +219,7 @@ const App: React.FC = () => {
               {SKILLS.flatMap((g) => g.items).reverse().map((skill) => (
                 <div
                   key={skill}
-                  className="flex items-center justify-center px-6 py-3 rounded-xl border border-brand-800 bg-brand-900/50 backdrop-blur-sm shadow-sm"
+                  className="flex items-center justify-center px-6 py-3 rounded-xl border border-brand-800 bg-brand-900/50 shadow-sm"
                 >
                   <span className="text-brand-100 font-medium text-lg">{skill}</span>
                 </div>
