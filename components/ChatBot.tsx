@@ -13,12 +13,18 @@ interface ChatBotProps {
 
 const renderMarkdown = (text: string): string => {
   return text
-    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    // Replace ### Headings
+    .replace(/###\s*(.+?)(?:\n|$)/g, '<strong class="block mt-4 mb-1 text-accent text-base">$1</strong>\n')
+    // Replace **bold**
+    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-brand-50 font-bold">$1</strong>')
+    // Replace *italic*
     .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    // Replace `code`
     .replace(
       /`(.+?)`/g,
-      '<code class="bg-slate-700 px-1 rounded text-xs">$1</code>',
+      '<code class="bg-brand-700/50 text-accent px-1.5 py-0.5 rounded text-xs border border-brand-700">$1</code>',
     )
+    // Replace line breaks
     .replace(/\n/g, "<br />");
 };
 
@@ -113,7 +119,8 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
       {/* Messages */}
       <div
         ref={scrollRef}
-        className="flex-grow p-4 space-y-4 overflow-y-auto bg-brand-900"
+        data-lenis-prevent="true"
+        className="flex-grow p-4 space-y-4 overflow-y-auto bg-brand-900 custom-scrollbar"
       >
         {messages.map((m, i) => (
           <div

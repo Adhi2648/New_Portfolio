@@ -21,7 +21,9 @@ export const SKILLS: SkillGroup[] = [
       "Python",
       "Java",
       "C++",
+      "C#",
       "Go",
+      "R",
       "SQL",
       "Kotlin",
     ],
@@ -29,29 +31,40 @@ export const SKILLS: SkillGroup[] = [
   {
     category: "Frameworks & AI",
     items: [
-      "React.js",
+      "React",
       "Next.js",
       "Node.js",
       "FastAPI",
       "Flask",
       "Django",
       "Spring Boot",
+      "PyTorch",
+      "TensorFlow",
+      "Scikit-learn",
+      "Hugging Face",
       "LangChain",
+      "LangGraph",
       "OpenAI API",
-      "PyTest",
+      "RAG",
+      "Fine-tuning",
+      "Prompt Engineering",
     ],
   },
   {
     category: "Databases & Cloud",
     items: [
+      "AWS (EC2, S3, Lambda)",
+      "Google Cloud Platform",
+      "Vertex AI",
+      "Docker",
+      "Kubernetes",
       "PostgreSQL",
       "MongoDB",
       "Redis",
       "DynamoDB",
+      "Pinecone",
       "FAISS",
-      "AWS (EC2, S3, Lambda)",
-      "Docker",
-      "Kubernetes",
+      "Feature Store",
     ],
   },
   {
@@ -62,9 +75,13 @@ export const SKILLS: SkillGroup[] = [
       "Jira",
       "Postman",
       "WebSockets",
-      "D3.js",
+      "gRPC",
+      "Spark",
+      "Splunk",
       "Grafana",
       "Prometheus",
+      "D3.js",
+      "PyTest"
     ],
   },
 ];
@@ -85,7 +102,7 @@ export const EXPERIENCES: Experience[] = [
   {
     role: "Software Developer",
     company: "CSULB",
-    location: "Part time (Long Beach, CA)",
+    location: "Long Beach, CA",
     period: "Dec 2024 – May 2025",
     bullets: [
       "Managed 10,000+ student records with Python data validation pipelines, reducing processing errors by 40%.",
@@ -97,7 +114,7 @@ export const EXPERIENCES: Experience[] = [
   {
     role: "Software engineer",
     company: "Ernst & Young",
-    location: "Full time (Bangalore, India)",
+    location: "Bangalore, India",
     period: "Aug 2023 – Aug 2024",
     bullets: [
       "Architected InfoSec dashboard serving 200+ analysts, processing 10M+ daily events and reducing threat analysis time by 67%.",
@@ -106,9 +123,38 @@ export const EXPERIENCES: Experience[] = [
       "Engineered automated testing suites using Jest and Mocha achieving 90% code coverage.",
     ],
   },
+  {
+    role: "Software Engineer",
+    company: "TEN: AI Labs",
+    location: "Remote",
+    period: "Feb 2022 – July 2022",
+    bullets: [
+      "Developed Java backend services for a high-throughput platform, reducing API latency by 30% by implementing optimized data structures and refining service-to-service communication protocols within a distributed environment.",
+      "Integrated AWS S3 and Lambda functions to automate media processing workflows, achieving a 20% reduction in operational costs while maintaining strict performance benchmarks for external client integrations.",
+      "Collaborated in an Agile environment to deliver 5+ core feature modules, improving code quality through peer reviews and implementing comprehensive unit tests to ensure production reliability.",
+    ],
+  },
 ];
 
 export const PROJECTS: Project[] = [
+  {
+    title: "CodeSense AI Code Review Platform",
+    link: "https://github.com/Adhi2648/CodeSense-CodeReviewer",
+    stack: [
+      "Node.js",
+      "TypeScript",
+      "React",
+      "Redis",
+      "BullMQ",
+      "Tree-sitter",
+      "pgvector",
+      "Gemini"
+    ],
+    description: [
+      "Architected a production-style code review platform with React, TypeScript, Monaco Editor, GitHub OAuth, and webhook-driven PR analysis, streaming multi-step review feedback in real time across typed services.",
+      "Optimized Tree-sitter parsing, BullMQ orchestration, Redis rate limiting, and pgvector retrieval for 10K+ chunks, reducing redundant AI review calls by 60% and keeping Algorithms responsive under concurrent load.",
+    ],
+  },
   {
     title: "Intelligent Document Q&A System with RAG",
     stack: [

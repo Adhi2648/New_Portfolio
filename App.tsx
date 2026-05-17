@@ -4,16 +4,17 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import Lenis from "lenis";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import ChatBot from "./components/ChatBot";
 import AnimatedText from "./components/AnimatedText";
 import ScrollReveal from "./components/ScrollReveal";
-import { GridPattern } from "./components/GridPattern";
+import { Particles } from "./components/Particles";
 import { Marquee } from "./components/Marquee";
 import { BorderBeam } from "./components/BorderBeam";
+import { CustomCursor } from "./components/CustomCursor";
 import {
   EDUCATION,
   EXPERIENCES,
@@ -26,6 +27,7 @@ gsap.registerPlugin(ScrollTrigger);
 
 const App: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const graphicRef = useRef<HTMLImageElement>(null);
 
   useEffect(() => {
     // Initialize Lenis for smooth scrolling
@@ -62,6 +64,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen text-brand-50 bg-brand-900 overflow-hidden font-sans">
+      <CustomCursor />
       
       {/* Minimal Navbar */}
       <nav className="fixed top-0 left-0 w-full z-50 mix-blend-difference px-6 py-6 transition-transform duration-300">
@@ -70,7 +73,7 @@ const App: React.FC = () => {
             onClick={() => scrollToSection("hero")}
             className="font-bold text-xl tracking-tighter"
           >
-            Adhi.
+            Adhi.dev
           </button>
           
           <div className="flex items-center gap-6">
@@ -98,46 +101,91 @@ const App: React.FC = () => {
       </nav>
 
       {/* Hero Section */}
-      <section id="hero" className="min-h-screen flex items-center relative px-6 pt-20">
-        <GridPattern
-          width={60}
-          height={60}
-          className="opacity-30 [mask-image:radial-gradient(800px_circle_at_center,white,transparent)]"
-        />
-        <div className="max-w-7xl mx-auto w-full relative z-10 flex flex-col gap-6">
-          <p className="text-brand-400 font-mono text-sm tracking-widest uppercase">
-            {PERSONAL_INFO.title}
-          </p>
-          <h1 className="text-6xl md:text-8xl lg:text-9xl font-bold leading-[0.95] tracking-tighter max-w-5xl">
-            <AnimatedText text="Adhi" /> <br />
-            <AnimatedText text="Narayanan" delay={0.1} /> <br />
-            <AnimatedText text="Ramesh" delay={0.2} />
-          </h1>
-          <div className="mt-8 max-w-2xl">
-            <ScrollReveal delay={0.6} direction="up" distance={20}>
-              <p className="text-xl md:text-2xl text-brand-300 font-medium leading-relaxed">
-                Specializing in microservices, cloud infrastructure, and RAG pipelines.
-                Building systems that scale.
-              </p>
+      <section id="hero" className="min-h-screen flex items-center relative px-6 pt-20 overflow-hidden">
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <Particles
+            className="absolute inset-0"
+            quantity={80}
+            ease={80}
+            color="#10b981"
+            staticity={50}
+          />
+        </div>
+        
+        <div className="max-w-7xl mx-auto w-full relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          
+          {/* Left: Text content */}
+          <div className="flex flex-col gap-6 order-2 lg:order-1">
+            <p className="text-brand-400 font-mono text-sm tracking-widest uppercase">
+              {PERSONAL_INFO.title}
+            </p>
+            <h1 className="text-6xl md:text-7xl lg:text-[6.5rem] xl:text-[7.5rem] font-bold leading-[1.1] tracking-tighter max-w-5xl">
+              <AnimatedText text="Hi," /> <br />
+              <AnimatedText text="I'm" delay={0.2} />{" "}
+              <AnimatedText text="Adhi" delay={0.3} className="text-brand-400" />
+            </h1>
+            <div className="mt-4 max-w-2xl">
+              <ScrollReveal delay={0.6} direction="up" distance={20}>
+                <p className="text-xl md:text-2xl text-brand-300 font-medium leading-relaxed">
+                  Specializing in microservices, cloud infrastructure, and RAG pipelines.
+                  Building systems that scale.
+                </p>
+              </ScrollReveal>
+            </div>
+            
+            <ScrollReveal delay={0.8} direction="up" distance={20} className="mt-4">
+              <div className="flex flex-wrap items-center gap-4">
+                <button
+                  onClick={() => scrollToSection("projects")}
+                  className="bg-brand-50 text-brand-900 px-8 py-4 rounded-full font-bold hover:bg-white transition-colors"
+                >
+                  View Work
+                </button>
+                <button
+                  onClick={() => setIsChatOpen(true)}
+                  className="border border-brand-700 bg-brand-900/50 hover:bg-brand-800 text-brand-50 px-8 py-4 rounded-full font-bold transition-colors flex items-center gap-2"
+                >
+                  Ask My AI
+                </button>
+              </div>
+            </ScrollReveal>
+
+            {/* Social links */}
+            <ScrollReveal delay={1.0} direction="up" distance={20}>
+              <div className="flex items-center gap-5 mt-4">
+                <a href={`https://${PERSONAL_INFO.github}`} target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-50 transition-colors duration-200">
+                  <FaGithub size={24} />
+                </a>
+                <a href={`https://${PERSONAL_INFO.linkedin}`} target="_blank" rel="noopener noreferrer" className="text-brand-400 hover:text-brand-50 transition-colors duration-200">
+                  <FaLinkedin size={24} />
+                </a>
+                <a href={`mailto:${PERSONAL_INFO.email}`} className="text-brand-400 hover:text-brand-50 transition-colors duration-200">
+                  <Mail size={24} />
+                </a>
+              </div>
             </ScrollReveal>
           </div>
-          
-          <ScrollReveal delay={0.8} direction="up" distance={20} className="mt-8">
-            <div className="flex flex-wrap gap-4">
-              <button
-                onClick={() => scrollToSection("projects")}
-                className="bg-brand-50 text-brand-900 px-8 py-4 rounded-full font-bold hover:bg-white transition-colors"
-              >
-                View Work
-              </button>
-              <button
-                onClick={() => setIsChatOpen(true)}
-                className="border border-brand-700 bg-brand-900/50 hover:bg-brand-800 text-brand-50 px-8 py-4 rounded-full font-bold transition-colors flex items-center gap-2"
-              >
-                Ask My AI
-              </button>
-            </div>
-          </ScrollReveal>
+
+          {/* Right: Abstract Space Graphic */}
+          <div className="flex justify-center lg:justify-end order-1 lg:order-2 z-0">
+            <ScrollReveal delay={0.3} direction="right" distance={40}>
+              <div className="relative mt-6 lg:mt-0 flex justify-center items-center">
+                <div className="relative animate-[float_10s_ease-in-out_infinite]">
+                  <div className="absolute inset-1/4 bg-brand-500/20 rounded-full blur-[80px]" />
+                  <img 
+                    ref={graphicRef}
+                    src="/hero-graphic.png" 
+                    alt="Abstract Space Singularity" 
+                    className="w-[360px] md:w-[500px] lg:w-[650px] object-contain opacity-80 mix-blend-screen scale-110 md:scale-125 lg:scale-150 transition-transform duration-700 hover:scale-[1.55]"
+                    style={{
+                      WebkitMaskImage: "radial-gradient(circle at center, black 30%, transparent 70%)",
+                      maskImage: "radial-gradient(circle at center, black 30%, transparent 70%)"
+                    }}
+                  />
+                </div>
+              </div>
+            </ScrollReveal>
+          </div>
         </div>
       </section>
 
@@ -250,7 +298,7 @@ const App: React.FC = () => {
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 text-brand-50 border-b border-brand-500 pb-1 hover:border-brand-50 transition-colors"
                       >
-                        View Project <ExternalLink size={16} />
+                        View Source {project.link.includes('github.com') ? <FaGithub size={16} /> : <ExternalLink size={16} />}
                       </a>
                     )}
                   </div>
