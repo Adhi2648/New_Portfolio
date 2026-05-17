@@ -12,20 +12,28 @@ interface ChatBotProps {
 }
 
 const renderMarkdown = (text: string): string => {
-  return text
-    // Replace ### Headings
-    .replace(/###\s*(.+?)(?:\n|$)/g, '<strong class="block mt-4 mb-1 text-accent text-base">$1</strong>\n')
-    // Replace **bold**
-    .replace(/\*\*(.+?)\*\*/g, '<strong class="text-brand-50 font-bold">$1</strong>')
-    // Replace *italic*
-    .replace(/\*(.+?)\*/g, "<em>$1</em>")
-    // Replace `code`
-    .replace(
-      /`(.+?)`/g,
-      '<code class="bg-brand-700/50 text-accent px-1.5 py-0.5 rounded text-xs border border-brand-700">$1</code>',
-    )
-    // Replace line breaks
-    .replace(/\n/g, "<br />");
+  return (
+    text
+      // Replace ### Headings
+      .replace(
+        /###\s*(.+?)(?:\n|$)/g,
+        '<strong class="block mt-4 mb-1 text-accent text-base">$1</strong>\n',
+      )
+      // Replace **bold**
+      .replace(
+        /\*\*(.+?)\*\*/g,
+        '<strong class="text-brand-50 font-bold">$1</strong>',
+      )
+      // Replace *italic*
+      .replace(/\*(.+?)\*/g, "<em>$1</em>")
+      // Replace `code`
+      .replace(
+        /`(.+?)`/g,
+        '<code class="bg-brand-700/50 text-accent px-1.5 py-0.5 rounded text-xs border border-brand-700">$1</code>',
+      )
+      // Replace line breaks
+      .replace(/\n/g, "<br />")
+  );
 };
 
 const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
@@ -38,7 +46,39 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
   ]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [messageCount, setMessageCount] = useState(0);
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const MAX_MESSAGES_PER_DAY = 3;
+
+  useEffect(() => {
+    const today = new Date().toISOString().split("T")[0];
+    const storedData = localStorage.getItem("chat_limit_data");
+
+    if (storedData) {
+      try {
+        const { date, count } = JSON.parse(storedData);
+        if (date === today) {
+          setMessageCount(count);
+        } else {
+          localStorage.setItem(
+            "chat_limit_data",
+            JSON.stringify({ date: today, count: 0 }),
+          );
+        }
+      } catch (e) {
+        localStorage.setItem(
+          "chat_limit_data",
+          JSON.stringify({ date: today, count: 0 }),
+        );
+      }
+    } else {
+      localStorage.setItem(
+        "chat_limit_data",
+        JSON.stringify({ date: today, count: 0 }),
+      );
+    }
+  }, []);
 
   useEffect(() => {
     if (scrollRef.current) {
@@ -49,19 +89,19 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
   const generateResponse = async (userMsg: string) => {
     try {
       setLoading(true);
-      
-      const response = await fetch('/.netlify/functions/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+
+      const response = await fetch("/.netlify/functions/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ messages, userMsg }),
       });
 
       if (!response.ok) {
-        throw new Error('Network response was not ok');
+        throw new Error("Network response was not ok");
       }
 
       const data = await response.json();
-      
+
       const aiText =
         data.text ||
         "I'm sorry, I couldn't process that. Try asking about Adhi's RAG system!";
@@ -83,11 +123,21 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim() || loading) return;
+    if (!input.trim() || loading || messageCount >= MAX_MESSAGES_PER_DAY)
+      return;
 
     const userMsg = input.trim();
     setMessages((prev) => [...prev, { role: "user", content: userMsg }]);
     setInput("");
+
+    const newCount = messageCount + 1;
+    setMessageCount(newCount);
+    const today = new Date().toISOString().split("T")[0];
+    localStorage.setItem(
+      "chat_limit_data",
+      JSON.stringify({ date: today, count: newCount }),
+    );
+
     generateResponse(userMsg);
   };
 
@@ -102,9 +152,7 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
             <Sparkles size={16} className="text-accent" />
           </div>
           <div>
-            <h3 className="font-bold text-sm leading-none">
-              Adhi's AI
-            </h3>
+            <h3 className="font-bold text-sm leading-none">Adhi's AI</h3>
             <span className="text-[10px] text-brand-400">Assistant</span>
           </div>
         </div>
@@ -152,27 +200,37 @@ const ChatBot: React.FC<ChatBotProps> = ({ isOpen, onClose }) => {
       </div>
 
       {/* Input */}
-      <form
-        onSubmit={handleSubmit}
-        className="p-4 bg-brand-900 border-t border-brand-800"
-      >
-        <div className="relative">
+      <div className="p-4 bg-brand-900 border-t border-brand-800">
+        {messageCount >= MAX_MESSAGES_PER_DAY && (
+          <div className="text-xs text-brand-400 text-center mb-3 bg-brand-800 py-2 rounded-lg border border-brand-700">
+            You've reached the limit of {MAX_MESSAGES_PER_DAY} messages for
+            today.
+          </div>
+        )}
+        <form onSubmit={handleSubmit} className="relative">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
-            placeholder="Ask about my projects..."
-            className="w-full bg-brand-800 border border-brand-700 rounded-xl px-4 py-3 text-sm text-brand-50 focus:outline-none focus:border-accent transition-all pr-12 placeholder:text-brand-500"
+            placeholder={
+              messageCount >= MAX_MESSAGES_PER_DAY
+                ? "Daily limit reached"
+                : "Ask about my projects..."
+            }
+            disabled={messageCount >= MAX_MESSAGES_PER_DAY}
+            className="w-full bg-brand-800 border border-brand-700 rounded-xl px-4 py-3 text-sm text-brand-50 focus:outline-none focus:border-accent transition-all pr-12 placeholder:text-brand-500 disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <button
             type="submit"
-            disabled={!input.trim() || loading}
+            disabled={
+              !input.trim() || loading || messageCount >= MAX_MESSAGES_PER_DAY
+            }
             className="absolute right-2 top-2 p-1.5 bg-brand-100 hover:bg-white disabled:opacity-50 disabled:bg-brand-800 rounded-lg transition-colors"
           >
             <Send size={18} className="text-brand-900" />
           </button>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   );
 };
