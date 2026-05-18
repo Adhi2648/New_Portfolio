@@ -100,7 +100,7 @@ export const EXPERIENCES: Experience[] = [
     ],
   },
   {
-    role: "Software Developer",
+    role: "Student Assistant - Software Developer",
     company: "CSULB",
     location: "Long Beach, CA",
     period: "Dec 2024 – May 2025",
@@ -112,7 +112,7 @@ export const EXPERIENCES: Experience[] = [
     ],
   },
   {
-    role: "Software engineer",
+    role: "Software Engineer",
     company: "Ernst & Young",
     location: "Bangalore, India",
     period: "Aug 2023 – Aug 2024",
@@ -124,7 +124,7 @@ export const EXPERIENCES: Experience[] = [
     ],
   },
   {
-    role: "Software Engineer",
+    role: "Software Developer",
     company: "TEN: AI Labs",
     location: "Remote",
     period: "Feb 2022 – July 2022",
