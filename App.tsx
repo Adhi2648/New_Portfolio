@@ -2,6 +2,10 @@ import {
   ExternalLink,
   Mail,
   MessageSquare,
+  Briefcase,
+  Code2,
+  GraduationCap,
+  Terminal,
 } from "lucide-react";
 import { FaGithub, FaLinkedin } from "react-icons/fa6";
 import React, { useEffect, useState, useRef } from "react";
@@ -27,7 +31,39 @@ gsap.registerPlugin(ScrollTrigger);
 
 const App: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>("hero");
   const graphicRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    const sections = ["hero", "skills", "experience", "projects", "education"];
+    // Cache DOM references to avoid querying document.getElementById on every scroll frame
+    const elements = sections.map((id) => document.getElementById(id)).filter(Boolean) as HTMLElement[];
+    
+    let ticking = false;
+
+    const handleScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          let currentSection = "hero";
+          const threshold = 180; // trigger highlighting when section top is within 180px of viewport top
+
+          for (const el of elements) {
+            const rect = el.getBoundingClientRect();
+            if (rect.top <= threshold) {
+              currentSection = el.id;
+            }
+          }
+          setActiveSection(currentSection);
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     // Initialize Lenis for smooth scrolling
@@ -85,28 +121,66 @@ const App: React.FC = () => {
         <div className="max-w-7xl mx-auto flex items-center justify-end pointer-events-auto">
           
           <div className="flex items-center gap-6">
-            <div className="hidden md:flex items-center gap-6 text-sm font-medium text-brand-300">
-              {["skills", "experience", "projects", "education"].map((sec) => (
-                <button
-                  key={sec}
-                  onClick={() => scrollToSection(sec)}
-                  className="hover:text-white capitalize transition-colors"
-                >
-                  {sec}
-                </button>
-              ))}
+            <div className="hidden md:flex items-center gap-6 text-sm font-medium">
+              {["skills", "experience", "projects", "education"].map((sec) => {
+                const isActive = activeSection === sec;
+                return (
+                  <button
+                    key={sec}
+                    onClick={() => scrollToSection(sec)}
+                    className={`capitalize transition-colors relative py-1 ${
+                      isActive ? "text-accent font-semibold" : "text-brand-300 hover:text-white"
+                    }`}
+                  >
+                    {sec}
+                    {isActive && (
+                      <span className="absolute bottom-0 left-0 w-full h-0.5 bg-accent rounded-full animate-pulse" />
+                    )}
+                  </button>
+                );
+              })}
             </div>
             <a
               href={(PERSONAL_INFO as any).resumeUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm font-semibold border border-brand-700 hover:bg-brand-800 px-4 py-2 rounded-full transition-all"
+              className="flex items-center gap-2 text-sm font-semibold border border-brand-700 hover:bg-brand-800 px-4 py-2 rounded-full transition-all text-brand-300 hover:text-white"
             >
               Resume
             </a>
           </div>
         </div>
       </nav>
+
+      {/* Floating Bottom Nav for Mobile & Tablet */}
+      <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[92vw] max-w-[360px] md:hidden select-none">
+        <div className="flex items-center justify-around px-2 py-2 rounded-full border border-brand-800 bg-brand-950/80 backdrop-blur-xl shadow-[0_8px_32px_rgba(0,0,0,0.6)]">
+          {[
+            { id: "skills", label: "Skills", icon: Code2 },
+            { id: "experience", label: "Exp", icon: Briefcase },
+            { id: "projects", label: "Projects", icon: Terminal },
+            { id: "education", label: "Edu", icon: GraduationCap },
+          ].map((item) => {
+            const Icon = item.icon;
+            const isActive = activeSection === item.id;
+            return (
+              <button
+                key={item.id}
+                onClick={() => scrollToSection(item.id)}
+                className={`flex flex-col items-center justify-center flex-1 py-1.5 transition-all relative ${
+                  isActive ? "text-accent scale-105" : "text-brand-300 hover:text-white"
+                }`}
+              >
+                <Icon size={20} className={isActive ? "drop-shadow-[0_0_8px_var(--color-accent)]" : ""} />
+                <span className="text-[10px] font-semibold mt-1 capitalize tracking-wide">{item.label}</span>
+                {isActive && (
+                  <span className="absolute -bottom-1 w-1 h-1 bg-accent rounded-full shadow-[0_0_8px_var(--color-accent)]" />
+                )}
+              </button>
+            );
+          })}
+        </div>
+      </div>
 
       {/* Hero Section */}
       <section id="hero" className="min-h-screen flex items-center relative px-6 pt-20 overflow-hidden">
@@ -403,7 +477,7 @@ const App: React.FC = () => {
       {!isChatOpen && (
         <button
           onClick={() => setIsChatOpen(true)}
-          className="fixed bottom-8 right-8 w-14 h-14 bg-brand-50 text-brand-900 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform z-50"
+          className="fixed bottom-24 right-6 md:bottom-8 md:right-8 w-14 h-14 bg-brand-50 text-brand-900 rounded-full flex items-center justify-center shadow-lg hover:scale-105 transition-transform z-50"
         >
           <MessageSquare size={24} />
         </button>
