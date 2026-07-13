@@ -88,7 +88,14 @@ export const SKILLS: SkillGroup[] = [
 
 export const EXPERIENCES: Experience[] = [
   {
-    role: "AI Engineer",
+    role: "Software Engineer",
+    company: "GreenFactor",
+    location: "Glendale, CA",
+    period: "March 2026 - Present",
+    bullets: [],
+  },
+  {
+    role: "AI Software Engineer",
     company: "Helton Law",
     location: "Costa Mesa, CA",
     period: "May 2025 – Present",

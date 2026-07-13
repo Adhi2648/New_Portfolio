@@ -337,9 +337,11 @@ const App: React.FC = () => {
                     <h3 className="text-2xl md:text-3xl font-bold tracking-tight mb-2">
                       {exp.role}
                     </h3>
-                    <p className="text-accent font-medium mb-6">
-                      {exp.company} • {exp.location}
-                    </p>
+                    {(exp.company || exp.location) && (
+                      <p className="text-accent font-medium mb-6">
+                        {[exp.company, exp.location].filter(Boolean).join(" • ")}
+                      </p>
+                    )}
                     <ul className="space-y-4">
                       {exp.bullets.map((bullet, bIdx) => (
                         <li key={bIdx} className="text-brand-300 leading-relaxed max-w-2xl text-lg flex items-start gap-4">
