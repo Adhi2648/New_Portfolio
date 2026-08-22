@@ -92,7 +92,11 @@ export const EXPERIENCES: Experience[] = [
     company: "GreenFactor",
     location: "Glendale, CA",
     period: "March 2026 - Present",
-    bullets: [],
+    bullets: [
+      "Developed Go microservices for real-time telemetry, processing 2,000+ events per second with sub-50ms latency to monitor 1,200+ intersections for 2028 Olympics traffic operations",
+      "Migrated legacy C++ MFC workflows to C# ASP.NET, cutting intersection update cycles from 15 minutes to 9 minutes via zero-downtime interval-logic refactoring and unit testing",
+      "Built TypeScript/React dashboards with sub-second visualizations, improving operator response time for critical signal alerts by 25% across the distributed Los Angeles traffic network",
+    ],
   },
   {
     role: "AI Software Engineer",

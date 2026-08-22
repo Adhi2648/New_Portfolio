@@ -116,7 +116,7 @@ const App: React.FC = () => {
         </div>
       </div>
       
-      {/* Minimal Navbar (Links & Resume) */}
+      {/* Minimal Navbar (Links) */}
       <nav className="fixed top-0 left-0 w-full z-50 px-6 py-6 transition-transform duration-300 pointer-events-none">
         <div className="max-w-7xl mx-auto flex items-center justify-end pointer-events-auto">
           
@@ -140,14 +140,6 @@ const App: React.FC = () => {
                 );
               })}
             </div>
-            <a
-              href={(PERSONAL_INFO as any).resumeUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-sm font-semibold border border-brand-700 hover:bg-brand-800 px-4 py-2 rounded-full transition-all text-brand-300 hover:text-white"
-            >
-              Resume
-            </a>
           </div>
         </div>
       </nav>
