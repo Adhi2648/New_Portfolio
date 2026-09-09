@@ -2,14 +2,14 @@ import { Education, Experience, Leadership, Project, SkillGroup } from "./types"
 
 export const PERSONAL_INFO = {
   name: "Adhi Narayanan Ramesh",
-  title: "AI Engineer & SDE",
+  title: "AI Applications Engineer & SDE",
   email: "adhinarayanan619@gmail.com",
   phone: "562-615-1022",
   linkedin: "www.linkedin.com/in/adhinr/",
   github: "github.com/Adhi2648",
   resumeUrl: "/Adhi_SDE_Resume.pdf",
   summary:
-    "Software developer graduating May 2026 with experience in full-stack systems, backend engineering, microservices, and cloud deployment. Skilled in JavaScript, Python, React, Node.js, and AWS, with strong problem solving skills and a history of shipping reliable, high-performance software.",
+    "Software engineer specializing in production AI systems, real-time infrastructure, and enterprise-scale deployments. Experienced in full-stack systems, microservices, and cloud deployment across Python, TypeScript, Go, and C# with a track record of shipping reliable, high-performance software.",
 };
 
 export const SKILLS: SkillGroup[] = [
@@ -88,21 +88,28 @@ export const SKILLS: SkillGroup[] = [
 
 export const EXPERIENCES: Experience[] = [
   {
+    role: "AI Applications Engineer",
+    company: "Carparts.com",
+    location: "Long Beach, CA",
+    period: "August 2026 – Present",
+    bullets: [],
+  },
+  {
     role: "Software Engineer",
     company: "GreenFactor",
     location: "Glendale, CA",
-    period: "March 2026 - Present",
+    period: "March 2026 – August 2026",
     bullets: [
-      "Developed Go microservices for real-time telemetry, processing 2,000+ events per second with sub-50ms latency to monitor 1,200+ intersections for 2028 Olympics traffic operations",
-      "Migrated legacy C++ MFC workflows to C# ASP.NET, cutting intersection update cycles from 15 minutes to 9 minutes via zero-downtime interval-logic refactoring and unit testing",
-      "Built TypeScript/React dashboards with sub-second visualizations, improving operator response time for critical signal alerts by 25% across the distributed Los Angeles traffic network",
+      "Developed React and TypeScript dashboards for 1,200 traffic intersections, reducing operator response times from 45s to 12s via sub-second WebSocket data visualizations.",
+      "Migrated legacy C++ MFC logic to C# ASP.NET services, cutting intersection update cycles from 5.0s to 3.0s using zero-downtime interval-logic refactoring.",
+      "Engineered Go microservices to ingest 2,000+ telemetry events per second with sub-50ms latency, maintaining 99.9% uptime for Los Angeles signal operations.",
     ],
   },
   {
     role: "AI Software Engineer",
     company: "Helton Law",
     location: "Costa Mesa, CA",
-    period: "May 2025 – Present",
+    period: "May 2025 – March 2026",
     bullets: [
       "Developed React.js/Node.js document upload interface processing 500+ weekly documents, reducing errors by 40%.",
       "Built 8 Express.js/PostgreSQL REST API endpoints improving data retrieval speed by 25%.",
@@ -126,7 +133,7 @@ export const EXPERIENCES: Experience[] = [
     role: "Software Engineer",
     company: "Ernst & Young",
     location: "Bangalore, India",
-    period: "Aug 2023 – Aug 2024",
+    period: "Aug 2022 – Jul 2024",
     bullets: [
       "Architected InfoSec dashboard serving 200+ analysts, processing 10M+ daily events and reducing threat analysis time by 67%.",
       "Integrated 5+ security APIs (Tenable, Splunk, QRadar, OWASP, Grype) into microservices architecture.",
